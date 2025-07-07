@@ -1,26 +1,31 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Layout } from "antd";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import Home from "./pages/Home"
 
-function App() {
+const { Content } = Layout;
+
+export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Layout style={{ minHeight: "100vh" }}>
+        <Content style={{ padding: "24px" }}>
+          <Routes>
+            {/* Route pour la page d'accueil (optionnelle) */}
+            <Route path="/" element={<Home />} />
+
+            {/* Route pour le login */}
+            <Route path="/login" element={<Login />} />
+
+            {/* Route pour le dashboard */}
+            <Route path="/dashboard" element={<Dashboard />} />
+
+            {/* Redirection par défaut (si aucune route ne correspond) */}
+            <Route path="*" element={<div>Page non trouvée</div>} />
+          </Routes>
+        </Content>
+      </Layout>
+    </Router>
   );
 }
-
-export default App;
