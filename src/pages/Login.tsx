@@ -1,28 +1,30 @@
+import { auth } from "../services/firebase";
 import { Button, Card, Form, Input, message } from "antd";
 import { useNavigate } from "react-router-dom"; // Importez useNavigate
 
 export default function Login() {
   const navigate = useNavigate(); // Initialisez le hook de navigation
 
-  const onFinish = async (values: { email: string; password: string }) => {
-    try {
-      // Simulation de connexion
-      await new Promise(resolve => setTimeout(resolve, 500)); // Petit délai pour le réalisme
-      
-      message.success(`Connecté avec ${values.email}`);
-      console.log("Connexion simulée !");
-      
-      // Redirection vers le dashboard
-      navigate("/dashboard"); 
-    } catch (error) {
-      message.error("Échec de la connexion");
-      console.error("Erreur", error);
-    }
-  };
+  const handleLogin = async (values: { email: string; password: string }) => {
+  try {
+    // Connexion avec Firebase Auth
+    const userCredential = await auth.signInWithEmailAndPassword(values.email, values.password);
+    const user = userCredential.user;
+
+    message.success(`Connecté avec ${user.email}`);
+    console.log("Connexion réussie :", user);
+
+    // Redirection vers le dashboard
+    navigate("/dashboard");
+  } catch (error: any) {
+    message.error("Échec de la connexion : " + error.message);
+    console.error("Erreur Firebase :", error);
+  }
+};
 
   return (
     <Card title="Connexion" style={{ width: 300, margin: "100px auto" }}>
-      <Form onFinish={onFinish}>
+      <Form onFinish={handleLogin}>
         <Form.Item 
           name="email" 
           rules={[
