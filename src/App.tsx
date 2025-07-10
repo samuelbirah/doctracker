@@ -10,7 +10,7 @@ export default function App() {
   return (
     <Router>
       <Layout style={{ minHeight: "100vh" }}>
-        <Content style={{ padding: "24px" }}>
+        <Content style={{ padding: "0px" }}>
           <Routes>
             {/* Route pour la page d'accueil (optionnelle) */}
             <Route path="/" element={<Home />} />

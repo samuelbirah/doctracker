@@ -1,54 +1,158 @@
 import { auth } from "../services/firebase";
-import { Button, Card, Form, Input, message } from "antd";
-import { useNavigate } from "react-router-dom"; // Importez useNavigate
+import { Button, Card, Form, Input, message, Image, Typography } from "antd";
+import { useToken } from "antd/es/theme/internal";
+import { useNavigate } from "react-router-dom";
+import { LockOutlined, MailOutlined } from '@ant-design/icons';
+import logo from '../assets/images/logo.png';
+import backgroundImage from '../assets/images/eau2.jpeg';
+
+const { Title, Text } = Typography;
 
 export default function Login() {
-  const navigate = useNavigate(); // Initialisez le hook de navigation
+  const { token } = useToken()
+
+  const navigate = useNavigate();
 
   const handleLogin = async (values: { email: string; password: string }) => {
-  try {
-    // Connexion avec Firebase Auth
-    const userCredential = await auth.signInWithEmailAndPassword(values.email, values.password);
-    const user = userCredential.user;
-
-    message.success(`Connecté avec ${user.email}`);
-    console.log("Connexion réussie :", user);
-
-    // Redirection vers le dashboard
-    navigate("/dashboard");
-  } catch (error: any) {
-    message.error("Échec de la connexion : " + error.message);
-    console.error("Erreur Firebase :", error);
-  }
-};
+    try {
+      const userCredential = await auth.signInWithEmailAndPassword(values.email, values.password);
+      message.success(`Bienvenue ${userCredential.user?.email}`);
+      navigate("/dashboard");
+    } catch (error: any) {
+      message.error("Échec de la connexion : " + error.message);
+    }
+  };
 
   return (
-    <Card title="Connexion" style={{ width: 300, margin: "100px auto" }}>
-      <Form onFinish={handleLogin}>
-        <Form.Item 
-          name="email" 
-          rules={[
-            { required: true, message: 'Email requis' },
-            { type: 'email', message: 'Email invalide' }
-          ]}
-        >
-          <Input placeholder="exemple@email.com" />
-        </Form.Item>
+    <div style={{
+      minHeight: '100vh',
+      backgroundImage: `linear-gradient(${token.colorPrimatyRGB}, 0.7), rgba(115, 158, 222, 0.7)), url(${backgroundImage})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: '20px',
+    }}>
+      <Card
+        style={{
+          width: '100%',
+          maxWidth: '380px',
+          borderRadius: token.borderRadiusLG,
+          boxShadow: token.boxShadowCard,
+          border: 'none',
+        }}
+        bodyStyle={{ 
+          padding: '28px',
+          paddingBottom: '20px' 
+        }}
+      >
+        <div style={{ 
+          textAlign: 'center', 
+          marginBottom: '24px',
+          padding: '0 8px'
+        }}>
+          <Image 
+            src={logo} 
+            preview={false}
+            width={80}
+            style={{ marginBottom: '12px' }}
+          />
+          <Title level={4} style={{ 
+            color: token.colorPrimary,
+            margin: 0,
+            fontWeight: 600,
+            fontSize: '18px'
+          }}>
+            REGIDESO - DocTracker
+          </Title>
+          <Text type="secondary" style={{ 
+            color: '#284063',
+            fontSize: '13px'
+          }}>
+            Suivi documentaire en temps réel
+          </Text>
+        </div>
 
-        <Form.Item
-          name="password"
-          rules={[
-            { required: true, message: 'Mot de passe requis' },
-            { min: 6, message: '6 caractères minimum' }
-          ]}
-        >
-          <Input.Password placeholder="••••••" />
-        </Form.Item>
+        <Form onFinish={handleLogin} layout="vertical">
+          <Form.Item 
+            name="email" 
+            rules={[
+              { required: true, message: 'Email requis' },
+              { type: 'email', message: 'Format email invalide' }
+            ]}
+          >
+            <Input 
+              prefix={<MailOutlined style={{ color: '#739EDE', fontSize: '14px' }} />}
+              placeholder="Email professionnel" 
+              size="middle"
+              style={{
+                borderRadius: token.borderRadius,
+                padding: '8px 12px',
+                backgroundColor: token.colorBgContainer
+              }}
+            />
+          </Form.Item>
 
-        <Button type="primary" htmlType="submit" block>
-          Se connecter
-        </Button>
-      </Form>
-    </Card>
+          <Form.Item
+            name="password"
+            rules={[
+              { required: true, message: 'Mot de passe requis' },
+              { min: 8, message: 'Minimum 8 caractères' }
+            ]}
+          >
+            <Input.Password 
+              prefix={<LockOutlined style={{ color: '#739EDE', fontSize: '14px' }} />}
+              placeholder="Mot de passe" 
+              size="middle"
+              style={{
+                borderRadius: '6px',
+                padding: '8px 12px',
+                backgroundColor: '#FBF9F6'
+              }}
+            />
+          </Form.Item>
+
+          <Form.Item style={{ marginTop: '16px', marginBottom: '8px' }}>
+            <Button 
+              type="primary" 
+              htmlType="submit" 
+              block
+              size="middle"
+              style={{
+                background: token.colorPrimary,
+                border: 'none',
+                borderRadius: token.borderRadius,
+                height: token.controlHeight,
+                fontWeight: 500,
+                fontSize: '14px'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = token.colorPrimaryHover;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#09459C';
+              }}
+            >
+              Connexion
+            </Button>
+          </Form.Item>
+        </Form>
+
+        <div style={{
+          textAlign: 'center',
+          marginTop: '16px',
+        }}>
+          <Text style={{ 
+            color: '#ACAEB0',
+            fontSize: '12px'
+          }}>
+            <a href="./Login.tsx" style={{ color: '#739EDE', fontWeight: 500 }}>
+              Assistance technique
+            </a> • Version 1.0.0
+          </Text>
+        </div>
+      </Card>
+    </div>
   );
 }
