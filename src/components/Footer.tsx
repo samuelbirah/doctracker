@@ -18,7 +18,7 @@ export default function AppFooter() {
         <Divider style={{ borderColor: 'rgba(255, 255, 255, 0.2)', margin: '12px 0' }} />
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Text style={{ color: 'rgba(255, 255, 255, 0.85)' }}>
-            © {new Date().getFullYear()} TechAccess - Tous droits réservés
+            © {new Date().getFullYear()} TechAccess - DocTracker. Tous droits réservés
           </Text>
           <div>
             <Text style={{ margin: '0 8px', color: 'rgba(255, 255, 255, 0.65)' }}>Version 1.0.0</Text>

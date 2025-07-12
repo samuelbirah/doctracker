@@ -1,7 +1,7 @@
 import { Button, Card, Row, Col, Typography, Space, Image } from "antd";
 import { useNavigate } from "react-router-dom";
 import { ArrowRightOutlined, LoginOutlined } from "@ant-design/icons";
-import regidesoLogo from "../assets/images/logo.png"; // Remplacez par votre chemin
+import regidesoLogo from "../assets/images/logoGray.png"; // Remplacez par votre chemin
 import documentHero from "../assets/images/eau2.jpeg"; // Ajoutez une image d'illustration
 
 const { Title, Text, Paragraph } = Typography;
@@ -22,10 +22,10 @@ export default function Home() {
             <Image 
               src={regidesoLogo} 
               preview={false} 
-              width={40} 
+              width={50} 
               style={{ verticalAlign: "middle" }} 
             />
-            <Text strong style={{ color: "white", fontSize: 20 }}>REGIDESO DocTracker</Text>
+            <Text strong style={{ color: "white", fontSize: 20 }}>DocTracker</Text>
           </Space>
         </div>
       </header>
@@ -70,8 +70,8 @@ export default function Home() {
               size="large"
               onClick={() => navigate("/dashboard")}
               style={{ 
-                color: "#fff",
-                borderColor: "#fff",
+                color: "#09459C",
+                borderColor: "#ffff",
                 fontWeight: 600
               }}
             >
@@ -193,7 +193,7 @@ export default function Home() {
         textAlign: "center"
       }}>
         <Paragraph style={{ marginBottom: 0 }}>
-          © {new Date().getFullYear()} REGIDESO DocTracker. Tous droits réservés.
+          © {new Date().getFullYear()} TechAccess - DocTracker. Tous droits réservés.
         </Paragraph>
       </footer>
     </div>
