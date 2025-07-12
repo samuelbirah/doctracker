@@ -1,7 +1,8 @@
-import { Table, Tag, Button, Popconfirm, Space, message } from "antd";
+import { Table, Tag, Button, Popconfirm, Space } from "antd";
+import App from 'antd/es/app';
 import type { ColumnType } from 'antd/es/table';
 import { Doc } from "../types/document";
-import { Key } from 'react';
+import { Key, useEffect, useRef } from 'react';
 import { doc, updateDoc, arrayUnion } from "firebase/firestore";
 import { db } from "../services/firebase";
 
@@ -19,6 +20,11 @@ interface Props {
 
 const DocumentTable = ({ data , currentUser}: Props) => {
 
+  const tableRef = useRef<HTMLDivElement>(null);
+
+  const { message : antdMessage} = App.useApp();
+
+
   const handleTransmit = async (docId: string) => {
     try {
       await updateDoc(doc(db, "documents", docId), {
@@ -29,10 +35,10 @@ const DocumentTable = ({ data , currentUser}: Props) => {
           by: currentUser
         })
       });
-      message.success("Document transmis avec succès");
+      antdMessage.success("Document transmis avec succès");
     } catch (error) {
       console.error("Erreur lors de la transmission:", error);
-      message.error("Échec de la transmission");
+      antdMessage.error("Échec de la transmission");
     }
   };
 
@@ -46,10 +52,10 @@ const DocumentTable = ({ data , currentUser}: Props) => {
           by: currentUser
         })
       });
-      message.success("Document clôturé avec succès");
+      antdMessage.success("Document clôturé avec succès");
     } catch (error) {
       console.error("Erreur lors de la clôture:", error);
-      message.error("Échec de la clôture");
+      antdMessage.error("Échec de la clôture");
     }
   };
 
@@ -132,12 +138,28 @@ const DocumentTable = ({ data , currentUser}: Props) => {
     (a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0)
   ).sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
 
+  useEffect(() => {
+    // Calculer la hauteur disponible pour le tableau
+    if (tableRef.current) {
+      const headerHeight = 64; // Hauteur de votre header
+      const tableTop = tableRef.current.getBoundingClientRect().top;
+      const availableHeight = window.innerHeight - tableTop - headerHeight - 32; // 32px de marge
+      
+      tableRef.current.style.height = `${Math.max(availableHeight, 400)}px`; // Hauteur minimale de 400px
+    }
+  }, []);
+
   return (
     <Table 
       columns={columns} 
       dataSource={sortedData} 
       rowKey="id"
       bordered
+      scroll={{
+        x: 'max-content',
+        y: tableRef.current?.clientHeight ? tableRef.current.clientHeight - 56 : undefined
+      }}
+      sticky={{offsetHeader: 64 }}
       expandable={{
         expandedRowRender: (record) => (
           <div style={{ padding: '8px 24px' }}>

@@ -1,31 +1,47 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Layout } from "antd";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
+import { App as AntdApp, message } from "antd";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
-import Home from "./pages/Home"
+import Home from "./pages/Home";
+import ProfilePage from "./pages/ProfilePage";
+import ProtectedLayout from "./components/ProtectedLayout";
+import PublicLayout from "./components/PublicLayout";
+import SettingsPage from './pages/Settings';
+import TeamPage from './pages/Team';
 
-const { Content } = Layout;
+  message.config({
+    duration: 3,
+    maxCount: 3
+  });
 
-export default function App() {
+function AppWrapper() {
   return (
     <Router>
-      <Layout style={{ minHeight: "100vh" }}>
-        <Content style={{ padding: "0px" }}>
+      <AuthProvider>
+        <AntdApp>
           <Routes>
-            {/* Route pour la page d'accueil (optionnelle) */}
-            <Route path="/" element={<Home />} />
+            {/* Routes publiques */}
+            <Route element={<PublicLayout />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+            </Route>
 
-            {/* Route pour le login */}
-            <Route path="/login" element={<Login />} />
+            {/* Routes protégées */}
+            <Route element={<ProtectedLayout />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/settings" element={<SettingsPage />} />
+              <Route path="/team" element={<TeamPage />} />
+            </Route>
 
-            {/* Route pour le dashboard */}
-            <Route path="/dashboard" element={<Dashboard />} />
-
-            {/* Redirection par défaut (si aucune route ne correspond) */}
-            <Route path="*" element={<div>Page non trouvée</div>} />
+            {/* Redirections */}
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
-        </Content>
-      </Layout>
+        </AntdApp>
+      </AuthProvider>
     </Router>
   );
 }
+
+export default AppWrapper;

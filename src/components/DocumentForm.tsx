@@ -1,9 +1,11 @@
-import { Button, message, Form, Input, Select, Card } from 'antd';
+import { Button, Form, Input, Select, Card } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
+import App from 'antd/es/app';
 import { Doc } from '../types/document';
 import { firebaseAuth, addDocument } from '../services/firebase';
 import { useState } from 'react';
 import { User } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
 
 
 type FormValues = {
@@ -24,10 +26,26 @@ interface Props {
 }
 
 export default function DocumentForm({ onDocumentAdded }: Props) {
+  const { message : antdMessage, modal: antdModal } = App.useApp();
   const [form] = Form.useForm<FormValues>();
   const [loading, setLoading] = useState(false);
   const currentUser = (firebaseAuth.currentUser as User)?.email || '';
-  // ... reste du code existant
+  const navigate = useNavigate()
+
+  const showSuccessModal = () => {
+    // D'abord fermer tous les messages et modaux existants
+    antdMessage.destroy();
+    
+    antdModal.success({
+      title: 'Document créé avec succès',
+      content: 'Votre document a été enregistré et transmis',
+      okText: 'Retour au dashboard',
+      cancelText: 'Créer un nouveau',
+      okButtonProps: { type: 'primary' },
+      onOk: () => navigate('/dashboard'),
+      onCancel: () => form.resetFields(),
+    });
+  };
 
   const handleSubmit = async (values: FormValues) => {
     setLoading(true);
@@ -46,13 +64,15 @@ export default function DocumentForm({ onDocumentAdded }: Props) {
         }]
       };
 
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
       await addDocument(docData);
-      message.success('Document créé avec succès');
-      form.resetFields();
+      console.log('Document créé');
+      showSuccessModal()
       onDocumentAdded(docData); // Notifier le parent
     } catch (error) {
       console.error('Erreur création document:', error);
-      message.error('Échec de la création du document');
+      antdMessage.error('Une erreur est survenu lors de la création');
     } finally {
       setLoading(false);
     }

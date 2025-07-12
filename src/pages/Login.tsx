@@ -1,5 +1,6 @@
 import { auth } from "../services/firebase";
-import { Button, Card, Form, Input, message, Image, Typography, theme } from "antd";
+import { Button, Card, Form, Input, Image, Typography, theme } from "antd";
+import App from 'antd/es/app';
 import { useNavigate } from "react-router-dom";
 import { LockOutlined, MailOutlined } from '@ant-design/icons';
 import logo from '../assets/images/logo.png';
@@ -9,6 +10,7 @@ const { Title, Text } = Typography
 const { useToken } = theme
 
 export default function Login() {
+  const { message : antdMessage} = App.useApp();
   const { token } = useToken()
 
   const navigate = useNavigate();
@@ -16,10 +18,10 @@ export default function Login() {
   const handleLogin = async (values: { email: string; password: string }) => {
     try {
       const userCredential = await auth.signInWithEmailAndPassword(values.email, values.password);
-      message.success(`Bienvenue ${userCredential.user?.email}`);
+      antdMessage.success(`Bienvenue ${userCredential.user?.email}`);
       navigate("/dashboard");
     } catch (error: any) {
-      message.error("Échec de la connexion : " + error.message);
+      antdMessage.error("Échec de la connexion : " + error.message);
     }
   };
 
@@ -62,9 +64,9 @@ export default function Login() {
             color: token.colorPrimary,
             margin: 0,
             fontWeight: 600,
-            fontSize: '18px'
+            fontSize: '20px'
           }}>
-            REGIDESO - DocTracker
+            DocTracker
           </Title>
           <Text type="secondary" style={{ 
             color: '#284063',

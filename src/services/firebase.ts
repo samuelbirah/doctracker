@@ -3,7 +3,8 @@ import { initializeApp } from "firebase/app";
 import { 
   getAuth,
   onAuthStateChanged as firebaseOnAuthStateChanged, 
-  signInWithEmailAndPassword as firebaseSignInWithEmailAndPassword 
+  signInWithEmailAndPassword as firebaseSignInWithEmailAndPassword ,
+  updateProfile
 } from "firebase/auth";
 
 import { Doc } from "../types/document";
@@ -82,4 +83,16 @@ export const subscribeToDocuments = (callback: (docs: Doc[]) => void) => {
     })) as Doc[];
     callback(docs);
   });
+};
+
+export const updateUserProfile = async (updates: {
+  displayName?: string;
+  photoURL?: string;
+  phoneNumber?: string;
+  department?:string;
+}) => {
+  if (!firebaseAuth.currentUser) throw new Error('User not authenticated');
+  
+  await updateProfile(firebaseAuth.currentUser, updates);
+  return firebaseAuth.currentUser.reload();
 };
