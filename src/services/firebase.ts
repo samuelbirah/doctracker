@@ -1,12 +1,24 @@
 // services/firebase.ts
 import { initializeApp } from "firebase/app";
 import { 
-  getAuth, 
+  getAuth,
   onAuthStateChanged as firebaseOnAuthStateChanged, 
   signInWithEmailAndPassword as firebaseSignInWithEmailAndPassword 
 } from "firebase/auth";
 
-import { getFirestore } from "firebase/firestore";
+import { Doc } from "../types/document";
+
+import { 
+  doc, 
+  updateDoc,
+  getFirestore,
+  addDoc,
+  collection,
+  query,
+  where,
+  getDocs,
+  onSnapshot
+} from "firebase/firestore";
 
 // Configuration Firebase (à remplacer par les valeurs de ton projet)
 const firebaseConfig = {
@@ -20,7 +32,7 @@ const firebaseConfig = {
 
 // Initialisation de Firebase
 const app = initializeApp(firebaseConfig);
-const firebaseAuth = getAuth(app);
+export const firebaseAuth = getAuth(app);
 const firestoreDb = getFirestore(app);
 
 // Adapte l'API mockée au vrai Firebase
@@ -33,4 +45,41 @@ export const auth = {
   }
 };
 
+export const addDocument = async (doc: Doc): Promise<void> => {
+  try {
+    await addDoc(collection(db, "documents"), doc);
+  } catch (error) {
+    console.error("Error adding document: ", error);
+    throw error;
+  }
+};
+
 export const db = firestoreDb;
+
+export const updateDocument = async (docId: string, updates: Partial<Doc>) => {
+  try {
+    await updateDoc(doc(db, "documents", docId), updates);
+  } catch (error) {
+    console.error("Error updating document: ", error);
+    throw error;
+  }
+};
+
+export const getDocumentsByUser = async (userId: string) => {
+  const q = query(
+    collection(db, "documents"),
+    where("emitter", "==", userId)
+  );
+  const querySnapshot = await getDocs(q);
+  return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Doc[];
+};
+
+export const subscribeToDocuments = (callback: (docs: Doc[]) => void) => {
+  return onSnapshot(collection(db, "documents"), (snapshot) => {
+    const docs = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    })) as Doc[];
+    callback(docs);
+  });
+};

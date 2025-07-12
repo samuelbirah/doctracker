@@ -1,12 +1,12 @@
 import { auth } from "../services/firebase";
-import { Button, Card, Form, Input, message, Image, Typography } from "antd";
-import { useToken } from "antd/es/theme/internal";
+import { Button, Card, Form, Input, message, Image, Typography, theme } from "antd";
 import { useNavigate } from "react-router-dom";
 import { LockOutlined, MailOutlined } from '@ant-design/icons';
 import logo from '../assets/images/logo.png';
 import backgroundImage from '../assets/images/eau2.jpeg';
 
-const { Title, Text } = Typography;
+const { Title, Text } = Typography
+const { useToken } = theme
 
 export default function Login() {
   const { token } = useToken()
@@ -26,7 +26,7 @@ export default function Login() {
   return (
     <div style={{
       minHeight: '100vh',
-      backgroundImage: `linear-gradient(${token.colorPrimatyRGB}, 0.7), rgba(115, 158, 222, 0.7)), url(${backgroundImage})`,
+      backgroundImage: `linear-gradient(rgba(9, 69, 156, 0.7), rgba(115, 158, 222, 0.7)), url(${backgroundImage})`,
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       display: 'flex',
@@ -39,7 +39,7 @@ export default function Login() {
           width: '100%',
           maxWidth: '380px',
           borderRadius: token.borderRadiusLG,
-          boxShadow: token.boxShadowCard,
+          boxShadow: token.boxShadow,
           border: 'none',
         }}
         bodyStyle={{ 
