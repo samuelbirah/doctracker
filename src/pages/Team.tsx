@@ -18,24 +18,24 @@ export default function TeamPage() {
   const [members, setMembers] = useState<TeamMember[]>([
     {
       key: '1',
-      name: 'Jean Kabasele',
-      email: 'jean.kabasele@regideso.cd',
+      name: 'Samuel Biraheka',
+      email: 'samuel.biraheka@gmail.com',
       role: 'Administrateur',
       department: 'Direction',
-      avatar: 'JK'
+      avatar: 'SB'
     },
     {
       key: '2',
-      name: 'Marie Mbuji',
-      email: 'marie.mbuji@regideso.cd',
+      name: 'Isaac Ketate',
+      email: 'isaacket97@gmail.com',
       role: 'Gestionnaire',
       department: 'Finances',
       avatar: 'MM'
     },
     {
       key: '3',
-      name: 'Paul Lumumba',
-      email: 'paul.lumumba@regideso.cd',
+      name: 'Samuel Mpudi',
+      email: 'sammpudi@gmail.com',
       role: 'Technicien',
       department: 'Maintenance',
       avatar: 'PL'
